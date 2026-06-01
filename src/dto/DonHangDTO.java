@@ -8,6 +8,10 @@ public class DonHangDTO {
 	private double tongTien;
 	private Timestamp ngayDat;
 	private Timestamp ngayGiao;
+	
+	public DonHangDTO() {
+		
+	}
 	public DonHangDTO(String maDonHang, String maKhachHang, double tongTien, Timestamp ngayDat, Timestamp ngayGiao) {
 		super();
 		this.maDonHang = maDonHang;

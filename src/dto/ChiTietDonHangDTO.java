@@ -4,6 +4,10 @@ public class ChiTietDonHangDTO {
 	private String maDonHang;
 	private String maVatLieu;
 	private int soLuong;
+	
+	public ChiTietDonHangDTO() {
+		
+	}
 	public ChiTietDonHangDTO(String maDonHang, String maVatLieu, int soLuong) {
 		super();
 		this.maDonHang = maDonHang;

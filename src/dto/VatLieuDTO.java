@@ -8,6 +8,9 @@ public class VatLieuDTO {
 	private double giaNhap;
 	private String donVi;
 	
+	public VatLieuDTO() {
+		
+	}
 	
 	public VatLieuDTO(String maVatLieu, int soLuong, String tenVatLieu, double giaBan, double giaNhap, String donVi) {
 		super();

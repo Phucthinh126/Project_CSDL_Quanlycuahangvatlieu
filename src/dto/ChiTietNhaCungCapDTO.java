@@ -7,6 +7,10 @@ public class ChiTietNhaCungCapDTO {
 	private String maVatLieu;
 	private String soLuong;
 	private Timestamp ngayCungCap;
+	
+	public ChiTietNhaCungCapDTO() {
+		
+	}
 	public ChiTietNhaCungCapDTO(String maNhaCC, String maVatLieu, String soLuong, Timestamp ngayCungCap) {
 		super();
 		this.maNhaCC = maNhaCC;

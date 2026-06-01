@@ -5,6 +5,10 @@ public class NhaCungCapDTO {
 	private String tenNhaCungCap;
 	private String sdt;
 	private String diaChi;
+	
+	public NhaCungCapDTO() {
+		
+	}
 	public NhaCungCapDTO(String maNhaCC, String tenNhaCungCap, String sdt, String diaChi) {
 		super();
 		this.maNhaCC = maNhaCC;

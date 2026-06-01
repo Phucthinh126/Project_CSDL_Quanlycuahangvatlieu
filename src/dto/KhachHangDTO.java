@@ -5,6 +5,10 @@ public class KhachHangDTO {
 	private String tenKhachHang;
 	private String sdt;
 	private String diaChi;
+	
+	public KhachHangDTO() {
+		
+	}
 	public KhachHangDTO(String maKhachHang, String tenKhachHang, String sdt, String diaChi) {
 		super();
 		this.maKhachHang = maKhachHang;
