@@ -40,11 +40,12 @@ public class VatLieuDAO {
 	 * 
 	 */
 	public VatLieuDTO getById(String maVatLieu) {
-		String sql = "SELECT MAVATLIEU, SOLUONG, TENVATLIEU, GIABAN, GIANHAP, DONVI "
-				+ "FROM VATLIEU WHERE MAVATLIEU = ?";
+
+		String sql = "SELECT MAVATLIEU, SOLUONG, TENVATLIEU, GIABAN, GIANHAP, DONVI FROM VATLIEU WHERE MAVATLIEU=?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maVatLieu);
+
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				return new VatLieuDTO(rs.getString("MAVATLIEU"), rs.getInt("SOLUONG"), rs.getString("TENVATLIEU"),
@@ -162,78 +163,39 @@ public class VatLieuDAO {
 	}
 
 	/**
-	 * Trừ số lượng vật liệu khi bán hàng
-	 */
-	public boolean deductStock(String maVatLieu, int soLuongBan) {
-		// Kiểm tra xem số lượng có đủ không
-		String checkSql = "SELECT SOLUONG FROM VATLIEU WHERE MAVATLIEU=?";
-		try (PreparedStatement checkPs = con.prepareStatement(checkSql)) {
-			checkPs.setString(1, maVatLieu);
-			ResultSet rs = checkPs.executeQuery();
-			if (rs.next()) {
-				int soLuongHienTai = rs.getInt("SOLUONG");
-				if (soLuongHienTai < soLuongBan) {
-					System.out.println("Không đủ hàng! Tồn kho: " + soLuongHienTai + ", Bán: " + soLuongBan);
-					return false;
-				}
-			}
-		} catch (SQLException e) {
-			System.out.println("Lỗi kiểm tra tồn kho: " + e.getMessage());
-			return false;
-		}
-
-		// Trừ kho
-		String sql = "UPDATE VATLIEU SET SOLUONG = SOLUONG - ? WHERE MAVATLIEU=?";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setInt(1, soLuongBan);
-			ps.setString(2, maVatLieu);
-			return ps.executeUpdate() > 0;
-		} catch (SQLException e) {
-			System.out.println("Lỗi trừ kho: " + e.getMessage());
-			return false;
-		}
-	}
-
-	/**
-	 * Cộng số lượng vật liệu khi nhập thêm từ nhà cung cấp
-	 * 
-	 * 
-	 */
-	public boolean addStock(String maVatLieu, int soLuongNhap) {
-		String sql = "UPDATE VATLIEU SET SOLUONG = SOLUONG + ? WHERE MAVATLIEU=?";
-
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setInt(1, soLuongNhap);
-			ps.setString(2, maVatLieu);
-			return ps.executeUpdate() > 0;
-		} catch (SQLException e) {
-			System.out.println("Lỗi cộng kho: " + e.getMessage());
-			return false;
-		}
-	}
-
-	/**
-	 * Sinh mã vật liệu tự động (VL001, VL002, ...)
+	 * sinh ma vat lieu tu dong
 	 * 
 	 */
 	public String generateMaVatLieu() {
-		String sql = "SELECT COUNT(*) as cnt FROM VATLIEU";
+		String sql = "SELECT MAX(MAVATLIEU) as max_ma FROM VATLIEU";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				int count = rs.getInt("cnt") + 1;
-				return String.format("VL%03d", count);
+				String maxMa = rs.getString("max_ma");
+
+				if (maxMa == null || maxMa.trim().isEmpty()) {
+					return "VL0001";
+				}
+				maxMa = maxMa.trim();
+
+				String phanSo = maxMa.substring(2);
+
+				int nextNumber = Integer.parseInt(phanSo) + 1;
+
+				return String.format("VL%04d", nextNumber);
 			}
 		} catch (SQLException e) {
-			System.out.println("Lỗi sinh mã: " + e.getMessage());
+			System.out.println("Lỗi sinh mã VatLieu: " + e.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("Lỗi chuyển đổi số khi sinh mã: " + e.getMessage());
 		}
-		return "VL001";
+
+		return "VL0001";
 	}
 
 	/**
-	 * Lấy số lượng tồn kho của một vật liệu
-	 * 
+	 * lay so luong ton kho cua vat lieu
 	 */
 	public int getStockQuantity(String maVatLieu) {
 		String sql = "SELECT SOLUONG FROM VATLIEU WHERE MAVATLIEU=?";

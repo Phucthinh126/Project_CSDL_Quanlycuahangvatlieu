@@ -58,7 +58,7 @@ public class CSVLoader {
 					// Sinh mã tự động nếu mã trống
 					if (maVL.isEmpty()) {
 						maVL = dao.generateMaVatLieu();
-						logs.add("⚙️ Dòng " + lineNumber + ": Sinh mã tự động -> " + maVL);
+						logs.add(" -->Dòng " + lineNumber + ": Sinh mã tự động -> " + maVL);
 					}
 
 					// Kiểm tra dữ liệu hợp lệ

@@ -16,7 +16,7 @@ public class KhachHangDAO {
 	// chuc nang cơ ban
 
 	/*
-	 * Lay dạnh sach tat ca khach hang trong bang khachHangDTO
+	 * Lay danh sach tat ca khach hang trong bang khachHangDTO
 	 */
 
 	public List<KhachHangDTO> getAll() {
@@ -77,7 +77,7 @@ public class KhachHangDAO {
 	}
 
 	/**
-	 * Cập nhật thông tin khách hàng
+	 * cap nhat thong tin khach hang
 	 * 
 	 */
 	public boolean update(KhachHangDTO kh) {
@@ -96,8 +96,7 @@ public class KhachHangDAO {
 	}
 
 	/**
-	 * Xóa khách hàng
-	 * 
+	 * xoa khach hang
 	 */
 	public boolean delete(String maKhachHang) {
 		String sql = "DELETE FROM KHACHHANG WHERE MAKHACHHANG=?";
@@ -112,8 +111,7 @@ public class KhachHangDAO {
 	}
 
 	/**
-	 * Tìm kiếm khách hàng theo tên
-	 * 
+	 * tim kiem theo ten
 	 * 
 	 */
 	public List<KhachHangDTO> searchByName(String tenKhachHang) {
@@ -136,19 +134,28 @@ public class KhachHangDAO {
 	}
 
 	/**
-	 * Kiểm tra khách hàng có tồn tại hay không theo SDT Dùng khi nhân viên muốn
-	 * biết khách hàng này đã từng mua hàng chưa
+	 * tim kiem khach hang theo so dien thoai
 	 * 
 	 */
 	public KhachHangDTO findBySdt(String sdt) {
-		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG WHERE SDT=?";
+		if (sdt == null)
+			return null;
+		sdt = sdt.trim();
+
+		System.out.println("Tìm kiếm khách hàng với SDT: '" + sdt + "'");
+
+		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG WHERE TRIM(SDT)=?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, sdt);
 			ResultSet rs = ps.executeQuery();
+
 			if (rs.next()) {
+				System.out.println("Tìm thấy khách hàng: " + rs.getString("TENKHACHHANG"));
 				return new KhachHangDTO(rs.getString("MAKHACHHANG"), rs.getString("TENKHACHHANG"), rs.getString("SDT"),
 						rs.getString("DIACHI"));
+			} else {
+				System.out.println("--> Không tìm thấy khách hàng nào khớp với SDT trên trong Database.");
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi findBySdt KhachHang: " + e.getMessage());
@@ -157,22 +164,30 @@ public class KhachHangDAO {
 	}
 
 	/**
-	 * Sinh mã khách hàng tự động (KH001, KH002, ...)
+	 * sinh ma kh tu dong
 	 * 
 	 */
 	public String generateMaKhachHang() {
-		String sql = "SELECT COUNT(*) as cnt FROM KHACHHANG";
-
+		String sql = "SELECT MAX(MAKHACHHANG) as max_ma FROM KHACHHANG";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				int count = rs.getInt("cnt") + 1;
-				return String.format("KH%03d", count);
+				String maxMa = rs.getString("max_ma");
+				if (maxMa == null || maxMa.trim().isEmpty()) {
+					return "KH001";
+				}
+
+				String sohientai = maxMa.substring(2).trim();
+				int nextNumber = Integer.parseInt(sohientai) + 1;
+
+				return String.format("KH%04d", nextNumber);
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi sinh mã KhachHang: " + e.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("Lỗi định dạng số khi sinh mã: " + e.getMessage());
 		}
-		return "KH001";
+		return "KH000";
 	}
 
 }
