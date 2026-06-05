@@ -21,13 +21,12 @@ public class KhachHangDAO {
 
 	public List<KhachHangDTO> getAll() {
 		List<KhachHangDTO> list = new ArrayList<>();
-		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG ORDER BY TENKHACHHANG";
-
+		String sql = "SELECT MaKH, TenKH, SoDienThoai, DiaChi FROM KhachHang ORDER BY TenKH";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				KhachHangDTO kh = new KhachHangDTO(rs.getString("MAKHACHHANG"), rs.getString("TENKHACHHANG"),
-						rs.getString("SDT"), rs.getString("DIACHI"));
+				KhachHangDTO kh = new KhachHangDTO(rs.getString("MaKH"), rs.getString("TenKH"),
+						rs.getString("SoDienThoai"), rs.getString("DiaChi"));
 				list.add(kh);
 			}
 		} catch (SQLException e) {
@@ -42,14 +41,13 @@ public class KhachHangDAO {
 	 */
 
 	public KhachHangDTO getById(String maKhachHang) {
-		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG WHERE MAKHACHHANG=?";
-
+		String sql = "SELECT MaKH, TenKH, SoDienThoai, DiaChi FROM KhachHang WHERE MaKH = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maKhachHang);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return new KhachHangDTO(rs.getString("MAKHACHHANG"), rs.getString("TENKHACHHANG"), rs.getString("SDT"),
-						rs.getString("DIACHI"));
+				return new KhachHangDTO(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("SoDienThoai"),
+						rs.getString("DiaChi"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi getById KhachHang: " + e.getMessage());
@@ -62,12 +60,11 @@ public class KhachHangDAO {
 	 * 
 	 */
 	public boolean insert(KhachHangDTO kh) {
-		String sql = "INSERT INTO KHACHHANG(MAKHACHHANG, TENKHACHHANG, SDT, DIACHI) VALUES (?,?,?,?)";
-
+		String sql = "INSERT INTO KhachHang (MaKH, TenKH, SoDienThoai, DiaChi) VALUES (?, ?, ?, ?)";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, kh.getMaKhachHang());
-			ps.setString(2, kh.getTenKhachHang());
-			ps.setString(3, kh.getSdt());
+			ps.setString(1, kh.getMaKH());
+			ps.setString(2, kh.getTenKH());
+			ps.setString(3, kh.getSoDienThoai());
 			ps.setString(4, kh.getDiaChi());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
@@ -81,13 +78,12 @@ public class KhachHangDAO {
 	 * 
 	 */
 	public boolean update(KhachHangDTO kh) {
-		String sql = "UPDATE KHACHHANG SET TENKHACHHANG=?, SDT=?, DIACHI=? WHERE MAKHACHHANG=?";
-
+		String sql = "UPDATE KhachHang SET TenKH = ?, SoDienThoai = ?, DiaChi = ? WHERE MaKH = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, kh.getTenKhachHang());
-			ps.setString(2, kh.getSdt());
+			ps.setString(1, kh.getTenKH());
+			ps.setString(2, kh.getSoDienThoai());
 			ps.setString(3, kh.getDiaChi());
-			ps.setString(4, kh.getMaKhachHang());
+			ps.setString(4, kh.getMaKH());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi update KhachHang: " + e.getMessage());
@@ -99,8 +95,7 @@ public class KhachHangDAO {
 	 * xoa khach hang
 	 */
 	public boolean delete(String maKhachHang) {
-		String sql = "DELETE FROM KHACHHANG WHERE MAKHACHHANG=?";
-
+		String sql = "DELETE FROM KhachHang WHERE MaKH = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maKhachHang);
 			return ps.executeUpdate() > 0;
@@ -116,16 +111,16 @@ public class KhachHangDAO {
 	 */
 	public List<KhachHangDTO> searchByName(String tenKhachHang) {
 		List<KhachHangDTO> list = new ArrayList<>();
-		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG " + "WHERE TENKHACHHANG LIKE ? "
-				+ "ORDER BY TENKHACHHANG";
+		String sql = "SELECT MaKH, TenKH, SoDienThoai, DiaChi FROM KhachHang WHERE TenKH LIKE ? ORDER BY TenKH";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, "%" + tenKhachHang + "%");
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				KhachHangDTO kh = new KhachHangDTO(rs.getString("MAKHACHHANG"), rs.getString("TENKHACHHANG"),
-						rs.getString("SDT"), rs.getString("DIACHI"));
-				list.add(kh);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					KhachHangDTO kh = new KhachHangDTO(rs.getString("MaKH"), rs.getString("TenKH"),
+							rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+					list.add(kh);
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi searchByName KhachHang: " + e.getMessage());
@@ -138,24 +133,25 @@ public class KhachHangDAO {
 	 * 
 	 */
 	public KhachHangDTO findBySdt(String sdt) {
-		if (sdt == null)
+		if (sdt == null) {
 			return null;
+		}
 		sdt = sdt.trim();
-
 		System.out.println("Tìm kiếm khách hàng với SDT: '" + sdt + "'");
 
-		String sql = "SELECT MAKHACHHANG, TENKHACHHANG, SDT, DIACHI FROM KHACHHANG WHERE TRIM(SDT)=?";
+		String sql = "SELECT MaKH, TenKH, SoDienThoai, DiaChi FROM KhachHang WHERE SoDienThoai = ?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, sdt);
-			ResultSet rs = ps.executeQuery();
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					System.out.println("Tìm thấy khách hàng: " + rs.getString("TenKH"));
 
-			if (rs.next()) {
-				System.out.println("Tìm thấy khách hàng: " + rs.getString("TENKHACHHANG"));
-				return new KhachHangDTO(rs.getString("MAKHACHHANG"), rs.getString("TENKHACHHANG"), rs.getString("SDT"),
-						rs.getString("DIACHI"));
-			} else {
-				System.out.println("--> Không tìm thấy khách hàng nào khớp với SDT trên trong Database.");
+					return new KhachHangDTO(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("SoDienThoai"),
+							rs.getString("DiaChi"));
+				} else {
+					System.out.println("--> Không tìm thấy khách hàng nào khớp với SDT trên trong Database.");
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi findBySdt KhachHang: " + e.getMessage());
@@ -168,7 +164,7 @@ public class KhachHangDAO {
 	 * 
 	 */
 	public String generateMaKhachHang() {
-		String sql = "SELECT MAX(MAKHACHHANG) as max_ma FROM KHACHHANG";
+		String sql = "SELECT MAX(MaKH) as max_ma FROM KhachHang";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {

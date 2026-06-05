@@ -18,13 +18,12 @@ public class NhaCungCapDAO {
 	 */
 	public List<NhaCungCapDTO> getAll() {
 		List<NhaCungCapDTO> list = new ArrayList<>();
-		String sql = "SELECT MANHACC, TENNHACUNGCAP, SDT, DIACHI FROM NHACUNGCAP ORDER BY TENNHACUNGCAP";
-
+		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap ORDER BY TenNCC";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MANHACC"), rs.getString("TENNHACUNGCAP"),
-						rs.getString("SDT"), rs.getString("DIACHI"));
+				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MaNCC"), rs.getString("TenNCC"),
+						rs.getString("SoDienThoai"), rs.getString("DiaChi"));
 				list.add(ncc);
 			}
 		} catch (SQLException e) {
@@ -38,14 +37,13 @@ public class NhaCungCapDAO {
 	 */
 
 	public NhaCungCapDTO getById(String maNhaCC) {
-		String sql = "SELECT MANHACC, TENNHACUNGCAP, SDT, DIACHI FROM NHACUNGCAP WHERE MANHACC=?";
-
+		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap WHERE MaNCC = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maNhaCC);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return new NhaCungCapDTO(rs.getString("MANHACC"), rs.getString("TENNHACUNGCAP"), rs.getString("SDT"),
-						rs.getString("DIACHI"));
+				return new NhaCungCapDTO(rs.getString("MaNCC"), rs.getString("TenNCC"), rs.getString("SoDienThoai"),
+						rs.getString("DiaChi"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi getById NhaCungCap: " + e.getMessage());
@@ -58,12 +56,11 @@ public class NhaCungCapDAO {
 	 */
 
 	public boolean insert(NhaCungCapDTO ncc) {
-		String sql = "INSERT INTO NHACUNGCAP(MANHACC, TENNHACUNGCAP, SDT, DIACHI) VALUES (?,?,?,?)";
-
+		String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi) VALUES (?, ?, ?, ?)";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, ncc.getMaNhaCC());
-			ps.setString(2, ncc.getTenNhaCungCap());
-			ps.setString(3, ncc.getSdt());
+			ps.setString(1, ncc.getMaNCC());
+			ps.setString(2, ncc.getTenNCC());
+			ps.setString(3, ncc.getSoDienThoai());
 			ps.setString(4, ncc.getDiaChi());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
@@ -76,13 +73,12 @@ public class NhaCungCapDAO {
 	 * cap nhat thong tin nha cung cap
 	 */
 	public boolean update(NhaCungCapDTO ncc) {
-		String sql = "UPDATE NHACUNGCAP SET TENNHACUNGCAP=?, SDT=?, DIACHI=? WHERE MANHACC=?";
-
+		String sql = "UPDATE NhaCungCap SET TenNCC = ?, SoDienThoai = ?, DiaChi = ? WHERE MaNCC = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, ncc.getTenNhaCungCap());
-			ps.setString(2, ncc.getSdt());
+			ps.setString(1, ncc.getTenNCC());
+			ps.setString(2, ncc.getSoDienThoai());
 			ps.setString(3, ncc.getDiaChi());
-			ps.setString(4, ncc.getMaNhaCC());
+			ps.setString(4, ncc.getMaNCC());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi update NhaCungCap: " + e.getMessage());
@@ -94,8 +90,7 @@ public class NhaCungCapDAO {
 	 * xoa nha cung cap
 	 */
 	public boolean delete(String maNhaCC) {
-		String sql = "DELETE FROM NHACUNGCAP WHERE MANHACC=?";
-
+		String sql = "DELETE FROM NhaCungCap WHERE MaNCC = ?";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maNhaCC);
 			return ps.executeUpdate() > 0;
@@ -110,15 +105,14 @@ public class NhaCungCapDAO {
 	 */
 	public List<NhaCungCapDTO> searchByName(String tenNhaCC) {
 		List<NhaCungCapDTO> list = new ArrayList<>();
-		String sql = "SELECT MANHACC, TENNHACUNGCAP, SDT, DIACHI FROM NHACUNGCAP "
-				+ "WHERE TENNHACUNGCAP LIKE ? ORDER BY TENNHACUNGCAP";
+		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap WHERE TenNCC LIKE ? ORDER BY TenNCC";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, "%" + tenNhaCC + "%");
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MANHACC"), rs.getString("TENNHACUNGCAP"),
-						rs.getString("SDT"), rs.getString("DIACHI"));
+				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MaNCC"), rs.getString("TenNCC"),
+						rs.getString("SoDienThoai"), rs.getString("DiaChi"));
 				list.add(ncc);
 			}
 		} catch (SQLException e) {
@@ -130,31 +124,29 @@ public class NhaCungCapDAO {
 	/**
 	 * tim kiem nha cung cap theo so dien thoai
 	 */
-	public List<NhaCungCapDTO> searchByPhone(String sdt) {
-		List<NhaCungCapDTO> list = new ArrayList<>();
-		String sql = "SELECT MANHACC, TENNHACUNGCAP, SDT, DIACHI FROM NHACUNGCAP "
-				+ "WHERE SDT LIKE ? ORDER BY TENNHACUNGCAP";
+	public NhaCungCapDTO searchByPhone(String sdt) {
+		NhaCungCapDTO n = null;
+		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap WHERE SoDienThoai LIKE ? ORDER BY TenNCC";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, "%" + sdt + "%");
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MANHACC"), rs.getString("TENNHACUNGCAP"),
-						rs.getString("SDT"), rs.getString("DIACHI"));
-				list.add(ncc);
+				NhaCungCapDTO ncc = new NhaCungCapDTO(rs.getString("MaNCC"), rs.getString("TenNCC"),
+						rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+				n = ncc;
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi searchByPhone NhaCungCap: " + e.getMessage());
 		}
-		return list;
+		return n;
 	}
 
 	/**
 	 * sinh ma nha cung cap tu dong
 	 */
 	public String generateMaNhaCC() {
-		String sql = "SELECT COUNT(*) as cnt FROM NHACUNGCAP";
-
+		String sql = "SELECT MAX(MaNCC) as max_ma FROM NhaCungCap";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -164,7 +156,7 @@ public class NhaCungCapDAO {
 		} catch (SQLException e) {
 			System.out.println("Lỗi sinh mã NhaCC: " + e.getMessage());
 		}
-		return "NCC001";
+		return "NCC000";
 	}
 
 }
