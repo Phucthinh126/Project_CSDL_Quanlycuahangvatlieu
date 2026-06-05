@@ -3,17 +3,17 @@ package dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class DongHangDTO {
+public class DonHangDTO {
 	private String maDH;
 	private String maKH;
 	private LocalDateTime ngayLap;
 	private BigDecimal tongTien;
 
-	public DongHangDTO() {
+	public DonHangDTO() {
 		super();
 	}
 
-	public DongHangDTO(String maDH, String maKH, LocalDateTime ngayLap, BigDecimal tongTien) {
+	public DonHangDTO(String maDH, String maKH, LocalDateTime ngayLap, BigDecimal tongTien) {
 		super();
 		this.maDH = maDH;
 		this.maKH = maKH;
