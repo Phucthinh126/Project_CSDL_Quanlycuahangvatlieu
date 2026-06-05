@@ -18,7 +18,7 @@ public class VatLieuDAO {
 	 */
 	public List<VatLieuDTO> getAll() {
 		List<VatLieuDTO> list = new ArrayList<>();
-		String sql = "SELECT MaVL, TenVL, DonViTinh, SoLuongTon, GiaBan " + "FROM VATLIEU " + "ORDER BY TENVATLIEU";
+		String sql = "SELECT MaVL, TenVL, DonViTinh, SoLuongTon, GiaBan " + "FROM VATLIEU " + "ORDER BY MaVL";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
@@ -39,7 +39,7 @@ public class VatLieuDAO {
 	 */
 	public VatLieuDTO getById(String maVatLieu) {
 
-		String sql = "SELECT MaVL, TenVL, DonViTinh, SoLuongTon, GiaBan " + "FROM VATLIEU WHERE MAVATLIEU=?";
+		String sql = "SELECT MaVL, TenVL, DonViTinh, SoLuongTon, GiaBan " + "FROM VATLIEU WHERE MaVL=?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, maVatLieu);

@@ -18,7 +18,7 @@ public class NhaCungCapDAO {
 	 */
 	public List<NhaCungCapDTO> getAll() {
 		List<NhaCungCapDTO> list = new ArrayList<>();
-		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap ORDER BY TenNCC";
+		String sql = "SELECT MaNCC, TenNCC, SoDienThoai, DiaChi FROM NhaCungCap ORDER BY MaNCC";
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

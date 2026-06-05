@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import database.DBConnection;
@@ -53,6 +54,24 @@ public class ChiTietDonHangDAO {
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi deleteOrderDetail: " + e.getMessage());
+			return false;
+		}
+	}
+
+	/*
+	 * Kiem tra mot mat hang da ton tai trong hon hang hay chua
+	 */
+	public boolean checkExisted(String maDonHang, String maVatLieu) {
+		// Chỉ SELECT 1 để kiểm tra sự tồn tại, cực kỳ nhẹ và nhanh
+		String sql = "SELECT 1 FROM ChiTietDonHang WHERE MaDH = ? AND MaVL = ?";
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setString(1, maDonHang);
+			ps.setString(2, maVatLieu);
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next(); // Nếu có dữ liệu trả về true, ngược lại false
+			}
+		} catch (SQLException e) {
+			System.out.println("Lỗi checkExisted: " + e.getMessage());
 			return false;
 		}
 	}
