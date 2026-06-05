@@ -1,43 +1,60 @@
 package dto;
 
+import java.math.BigDecimal;
+
 public class ChiTietDonHangDTO {
-	private String maDonHang;
-	private String maVatLieu;
+	private String maDH;
+	private String maVL;
 	private int soLuong;
-	
+	private BigDecimal donGia;
+
 	public ChiTietDonHangDTO() {
-		
-	}
-	public ChiTietDonHangDTO(String maDonHang, String maVatLieu, int soLuong) {
 		super();
-		this.maDonHang = maDonHang;
-		this.maVatLieu = maVatLieu;
+	}
+
+	public ChiTietDonHangDTO(String maDH, String maVL, int soLuong, BigDecimal donGia) {
+		super();
+		this.maDH = maDH;
+		this.maVL = maVL;
 		this.soLuong = soLuong;
+		this.donGia = donGia;
 	}
-	public String getMaDonHang() {
-		return maDonHang;
+
+	public String getMaDH() {
+		return maDH;
 	}
-	public void setMaDonHang(String maDonHang) {
-		this.maDonHang = maDonHang;
+
+	public void setMaDH(String maDH) {
+		this.maDH = maDH;
 	}
-	public String getMaVatLieu() {
-		return maVatLieu;
+
+	public String getMaVL() {
+		return maVL;
 	}
-	public void setMaVatLieu(String maVatLieu) {
-		this.maVatLieu = maVatLieu;
+
+	public void setMaVL(String maVL) {
+		this.maVL = maVL;
 	}
+
 	public int getSoLuong() {
 		return soLuong;
 	}
+
 	public void setSoLuong(int soLuong) {
 		this.soLuong = soLuong;
 	}
-	@Override
-	public String toString() {
-		  return "ChiTietDonHangDTO{maDonHang='" + maDonHang
-		             + "', maVatLieu='" + maVatLieu
-		             + "', soLuong=" + soLuong + "}";
 
+	public BigDecimal getDonGia() {
+		return donGia;
 	}
 
+	public void setDonGia(BigDecimal donGia) {
+		this.donGia = donGia;
+	}
+
+	@Override
+	public String toString() {
+		return "Chi Tiet Don Hang: [ " + "MaDH: " + maDH + ", MaVL: " + maVL + ", SoLuong: " + soLuong + ", DonGia: "
+				+ donGia + " ]";
+	}
 }

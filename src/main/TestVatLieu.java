@@ -1,11 +1,7 @@
 package main;
 
-import java.util.List;
-
 import dao.DonHangDAO;
 import dao.KhachHangDAO;
-import dto.ChiTietDonHangDTO;
-import dto.DonHangDTO;
 
 public class TestVatLieu {
 	public static void main(String[] args) {
@@ -31,21 +27,21 @@ public class TestVatLieu {
 //			System.out.println(e);
 //		}
 
-		// Danh sach chi tiet don hang thong qua ma don hang
-		List<ChiTietDonHangDTO> getOrderDetails = dhDAO.getOrderDetails("DH150");
-		for (ChiTietDonHangDTO e : getOrderDetails) {
-			System.out.println(e);
-		}
-
-		// Doanh thu trong mot khoan thoi gian
-		System.out
-				.println("Doanh thu tu thang 4-5 nam 2026: " + dhDAO.getRevenueByDateRange("2026-04-01", "2026-04-01"));
-		// Danh sach don hang cua khach hang
-		System.out.println("Danh sach don hang cua khach hang");
-		List<DonHangDTO> getOrdersByCustomer = dhDAO.getOrdersByCustomer("KH007");
-		for (DonHangDTO e : getOrdersByCustomer) {
-			System.out.println(e);
-		}
+//		// Danh sach chi tiet don hang thong qua ma don hang
+//		List<ChiTietDonHangDTO> getOrderDetails = dhDAO.getOrderDetails("DH150");
+//		for (ChiTietDonHangDTO e : getOrderDetails) {
+//			System.out.println(e);
+//		}
+//
+//		// Doanh thu trong mot khoan thoi gian
+//		System.out
+//				.println("Doanh thu tu thang 4-5 nam 2026: " + dhDAO.getRevenueByDateRange("2026-04-01", "2026-04-01"));
+//		// Danh sach don hang cua khach hang
+//		System.out.println("Danh sach don hang cua khach hang");
+//		List<DonHangDTO> getOrdersByCustomer = dhDAO.getOrdersByCustomer("KH007");
+//		for (DonHangDTO e : getOrdersByCustomer) {
+//			System.out.println(e);
+//		}
 
 	}
 

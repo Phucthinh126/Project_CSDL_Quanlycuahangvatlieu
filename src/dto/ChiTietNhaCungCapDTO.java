@@ -1,39 +1,39 @@
 package dto;
 
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 
 public class ChiTietNhaCungCapDTO {
-	private String maNhaCC;
-	private String maVatLieu;
+	private String maNCC;
+	private String maVL;
 	private int soLuong;
-	private Timestamp ngayCungCap;
+	private BigDecimal giaNhap;
 
 	public ChiTietNhaCungCapDTO() {
-
-	}
-
-	public ChiTietNhaCungCapDTO(String maNhaCC, String maVatLieu, int soLuong, Timestamp ngayCungCap) {
 		super();
-		this.maNhaCC = maNhaCC;
-		this.maVatLieu = maVatLieu;
+	}
+
+	public ChiTietNhaCungCapDTO(String maNCC, String maVL, int soLuong, BigDecimal giaNhap) {
+		super();
+		this.maNCC = maNCC;
+		this.maVL = maVL;
 		this.soLuong = soLuong;
-		this.ngayCungCap = ngayCungCap;
+		this.giaNhap = giaNhap;
 	}
 
-	public String getMaNhaCC() {
-		return maNhaCC;
+	public String getMaNCC() {
+		return maNCC;
 	}
 
-	public void setMaNhaCC(String maNhaCC) {
-		this.maNhaCC = maNhaCC;
+	public void setMaNCC(String maNCC) {
+		this.maNCC = maNCC;
 	}
 
-	public String getmaVatLieu() {
-		return maVatLieu;
+	public String getMaVL() {
+		return maVL;
 	}
 
-	public void setmaVatLieu(String maVatLieu) {
-		this.maVatLieu = maVatLieu;
+	public void setMaVL(String maVL) {
+		this.maVL = maVL;
 	}
 
 	public int getSoLuong() {
@@ -44,19 +44,18 @@ public class ChiTietNhaCungCapDTO {
 		this.soLuong = soLuong;
 	}
 
-	public Timestamp getNgayCungCap() {
-		return ngayCungCap;
+	public BigDecimal getGiaNhap() {
+		return giaNhap;
 	}
 
-	public void setNgayCungCap(Timestamp ngayCungCap) {
-		this.ngayCungCap = ngayCungCap;
+	public void setGiaNhap(BigDecimal giaNhap) {
+		this.giaNhap = giaNhap;
 	}
 
 	@Override
 	public String toString() {
-		return "ChiTietCungCapDTO{maNhaCC='" + maNhaCC + "', maVatLieu='" + maVatLieu + "', soLuong=" + soLuong
-				+ ", ngayCungCap=" + ngayCungCap + "}";
-
+		return "Chi Tiet Nha Cung Cap: [ " + "MaNCC: " + maNCC + ", MaVL: " + maVL + ", SoLuong: " + soLuong
+				+ ", GiaNhap: " + " ]";
 	}
 
 }

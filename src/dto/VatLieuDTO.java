@@ -1,97 +1,71 @@
 package dto;
 
+import java.math.BigDecimal;
+
 public class VatLieuDTO {
-	private String maVatLieu; 
-	private int soLuong; 
-	private String tenVatLieu; 
-	private double giaBan;
-	private double giaNhap;
-	private String donVi;
-	
+	private String maVL;
+	private String tenVL;
+	private String donViTinh;
+	private int soLuongTon;
+	private BigDecimal giaBan;
+
 	public VatLieuDTO() {
-		
-	}
-	
-	public VatLieuDTO(String maVatLieu, int soLuong, String tenVatLieu, double giaBan, double giaNhap, String donVi) {
 		super();
-		this.maVatLieu = maVatLieu;
-		this.soLuong = soLuong;
-		this.tenVatLieu = tenVatLieu;
+	}
+
+	public VatLieuDTO(String maVL, String tenVL, String donViTinh, int soLuongTon, BigDecimal giaBan) {
+		super();
+		this.maVL = maVL;
+		this.tenVL = tenVL;
+		this.donViTinh = donViTinh;
+		this.soLuongTon = soLuongTon;
 		this.giaBan = giaBan;
-		this.giaNhap = giaNhap;
-		this.donVi = donVi;
 	}
 
-
-	public String getMaVatLieu() {
-		return maVatLieu;
+	public String getMaVL() {
+		return maVL;
 	}
 
-
-	public void setMaVatLieu(String maVatLieu) {
-		this.maVatLieu = maVatLieu;
+	public void setMaVL(String maVL) {
+		this.maVL = maVL;
 	}
 
-
-	public int getSoLuong() {
-		return soLuong;
+	public String getTenVL() {
+		return tenVL;
 	}
 
-
-	public void setSoLuong(int soLuong) {
-		this.soLuong = soLuong;
+	public void setTenVL(String tenVL) {
+		this.tenVL = tenVL;
 	}
 
-
-	public String getTenVatLieu() {
-		return tenVatLieu;
+	public String getDonViTinh() {
+		return donViTinh;
 	}
 
-
-	public void setTenVatLieu(String tenVatLieu) {
-		this.tenVatLieu = tenVatLieu;
+	public void setDonViTinh(String donViTinh) {
+		this.donViTinh = donViTinh;
 	}
 
+	public int getSoLuongTon() {
+		return soLuongTon;
+	}
 
-	public double getGiaBan() {
+	public void setSoLuongTon(int soLuongTon) {
+		this.soLuongTon = soLuongTon;
+	}
+
+	public BigDecimal getGiaBan() {
 		return giaBan;
 	}
 
-
-	public void setGiaBan(double giaBan) {
+	public void setGiaBan(BigDecimal giaBan) {
 		this.giaBan = giaBan;
 	}
 
-
-	public double getGiaNhap() {
-		return giaNhap;
-	}
-
-
-	public void setGiaNhap(double giaNhap) {
-		this.giaNhap = giaNhap;
-	}
-
-
-	public String getDonVi() {
-		return donVi;
-	}
-
-
-	public void setDonVi(String donVi) {
-		this.donVi = donVi;
-	}
-
-
 	@Override
 	public String toString() {
-		 return "VatLieuDTO{maVatLieu='" + maVatLieu + "', soLuong=" + soLuong
-	             + ", tenVatLieu='" + tenVatLieu + "', giaBan=" + giaBan
-	             + ", giaNhap=" + giaNhap + ", donVi='" + donVi + "'}";
-
+		return "Vat Lieu: [ " + "MaVL: " + maVL + ", TenVL: " + tenVL + ", DonViTinh: " + donViTinh + ", SoLuongTon: "
+				+ soLuongTon + ", GiaBan: " + giaBan + " ]";
 	}
-	
-	
-	
 
 }

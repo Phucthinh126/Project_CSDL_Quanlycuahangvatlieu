@@ -1,51 +1,58 @@
 package dto;
 
 public class NhaCungCapDTO {
-	private String maNhaCC;
-	private String tenNhaCungCap;
-	private String sdt;
+
+	private String maNCC;
+	private String tenNCC;
+	private String soDienThoai;
 	private String diaChi;
-	
+
 	public NhaCungCapDTO() {
-		
 	}
-	public NhaCungCapDTO(String maNhaCC, String tenNhaCungCap, String sdt, String diaChi) {
+
+	public NhaCungCapDTO(String maNCC, String tenNCC, String soDienThoai, String diaChi) {
 		super();
-		this.maNhaCC = maNhaCC;
-		this.tenNhaCungCap = tenNhaCungCap;
-		this.sdt = sdt;
+		this.maNCC = maNCC;
+		this.tenNCC = tenNCC;
+		this.soDienThoai = soDienThoai;
 		this.diaChi = diaChi;
 	}
-	public String getMaNhaCC() {
-		return maNhaCC;
+
+	public String getMaNCC() {
+		return maNCC;
 	}
-	public void setMaNhaCC(String maNhaCC) {
-		this.maNhaCC = maNhaCC;
+
+	public void setMaNCC(String maNCC) {
+		this.maNCC = maNCC;
 	}
-	public String getTenNhaCungCap() {
-		return tenNhaCungCap;
+
+	public String getTenNCC() {
+		return tenNCC;
 	}
-	public void setTenNhaCungCap(String tenNhaCungCap) {
-		this.tenNhaCungCap = tenNhaCungCap;
+
+	public void setTenNCC(String tenNCC) {
+		this.tenNCC = tenNCC;
 	}
-	public String getSdt() {
-		return sdt;
+
+	public String getSoDienThoai() {
+		return soDienThoai;
 	}
-	public void setSdt(String sdt) {
-		this.sdt = sdt;
+
+	public void setSoDienThoai(String soDienThoai) {
+		this.soDienThoai = soDienThoai;
 	}
+
 	public String getDiaChi() {
 		return diaChi;
 	}
+
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
 	}
+
 	@Override
 	public String toString() {
-		return "NhaCungCapDTO{maNhaCC='" + maNhaCC
-	             + "', tenNhaCungCap='" + tenNhaCungCap
-	             + "', sdt='" + sdt + "', diaChi='" + diaChi + "'}";
-
+		return "Nha Cung Cap: [ " + " MaNCC: " + maNCC + ", TenNCC: " + tenNCC + ", Sdt: " + soDienThoai + ", DiaChi: "
+				+ diaChi + " ]";
 	}
-
 }
