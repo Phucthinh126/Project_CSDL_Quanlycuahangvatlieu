@@ -31,26 +31,20 @@ public class CSVLoader {
 		VatLieuDAO dao = new VatLieuDAO();
 		int successCount = 0;
 		int errorCount = 0;
-
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(Files.newInputStream(Paths.get(filePath)), StandardCharsets.UTF_8))) {
-
 			String headerLine = reader.readLine();
 			if (headerLine == null) {
 				logs.add("Lỗi: File CSV rỗng");
 				return logs;
 			}
-
 			String[] headers = parseCSVLine(headerLine);
 			logs.add("File header: " + String.join(", ", headers));
-
 			String line;
 			int lineNumber = 2;
-
 			while ((line = reader.readLine()) != null) {
 				try {
 					String[] values = parseCSVLine(line);
-
 					// Kiểm tra số cột của dòng dữ liệu so với header
 					if (values.length != headers.length) {
 						logs.add("Dòng " + lineNumber + ": Số cột không khớp");
@@ -58,20 +52,17 @@ public class CSVLoader {
 						lineNumber++;
 						continue;
 					}
-
 					// b1: Đọc và trim dữ liệu
-					String maVL = values[0].trim();
-					String tenVL = values[1].trim();
-					int soLuong = Integer.parseInt(values[2].trim());
-					BigDecimal giaBan = new BigDecimal(values[3].trim());
-					String donVi = values[4].trim();
-
+					String maVL = values[0].replace("\"", "").trim();
+					String tenVL = values[1].replace("\"", "").trim();
+					String donVi = values[2].replace("\"", "").trim(); // Cột 3: DonViTinh ("Cây")
+					int soLuong = Integer.parseInt(values[3].replace("\"", "").trim()); // Cột 4: SoLuongTon (1500)
+					BigDecimal giaBan = new BigDecimal(values[4].replace("\"", "").trim()); // Cột 5: GiaBan (285000)
 					// b2: Sinh mã tự động nếu file CSV bỏ trống mã vật liệu
 					if (maVL.isEmpty()) {
 						maVL = dao.generateMaVatLieu(); // Hoặc hàm sinh mã vật liệu của bạn
 						logs.add(" --> Dòng " + lineNumber + ": Sinh mã tự động -> " + maVL);
 					}
-
 					// b3: Kiểm tra tính hợp lệ dữ liệu căn bản
 					if (tenVL.isEmpty()) {
 						logs.add("Dòng " + lineNumber + ": Tên vật liệu không được để trống");
@@ -85,13 +76,10 @@ public class CSVLoader {
 						lineNumber++;
 						continue;
 					}
-
 					// Khởi tạo DTO
 					VatLieuDTO vl = new VatLieuDTO(maVL, tenVL, donVi, soLuong, giaBan);
-
 					// b4: Kiểm tra trùng mã, ghi đè
 					boolean isExisted = (dao.getById(maVL) != null);
-
 					if (isExisted) {
 						// Tình huống trùng mã -> Chạy lệnh UPDATE đè dữ liệu cũ
 						if (dao.update(vl)) {
@@ -112,7 +100,6 @@ public class CSVLoader {
 							errorCount++;
 						}
 					}
-
 				} catch (NumberFormatException e) {
 					logs.add("Dòng " + lineNumber + ": Lỗi định dạng số (Sai kiểu số lượng/giá tiền) - "
 							+ e.getMessage());
@@ -130,7 +117,6 @@ public class CSVLoader {
 		return logs;
 	}
 
-	// Load khach hang
 	public static List<String> loadKhachHangFromCSV(String filePath) {
 		List<String> logs = new ArrayList<>();
 		KhachHangDAO dao = new KhachHangDAO();
@@ -139,16 +125,40 @@ public class CSVLoader {
 
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(Files.newInputStream(Paths.get(filePath)), StandardCharsets.UTF_8))) {
-
 			String headerLine = reader.readLine();
 			if (headerLine == null) {
 				logs.add("Lỗi: File CSV rỗng");
 				return logs;
 			}
-
 			String[] headers = parseCSVLine(headerLine);
 			String line;
 			int lineNumber = 2;
+
+			java.util.Map<String, KhachHangDTO> existedSdtMap = new java.util.HashMap<>();
+			List<KhachHangDTO> allKhachHang = dao.getAll();
+
+			if (allKhachHang != null) {
+				for (KhachHangDTO kh : allKhachHang) {
+					if (kh != null && kh.getSoDienThoai() != null && !kh.getSoDienThoai().trim().isEmpty()) {
+						String sdtChuan = kh.getSoDienThoai().trim();
+						// Nếu lỡ dưới DB bị trùng SĐT, chỉ giữ lại người đầu tiên trong Map để kiểm tra
+						if (!existedSdtMap.containsKey(sdtChuan)) {
+							existedSdtMap.put(sdtChuan, kh);
+						}
+					}
+				}
+			}
+
+			// 2. TỐI ƯU SINH MÃ: Lấy mã gốc lớn nhất để tự tăng trong Java (Tránh lỗi dồn
+			// toa mã)
+			String maxMaHienTai = dao.generateMaKhachHang();
+			int suffixNumber = 1;
+			if (maxMaHienTai != null) {
+				String chiLaySo = maxMaHienTai.replaceAll("[^0-9]", "");
+				if (!chiLaySo.isEmpty()) {
+					suffixNumber = Integer.parseInt(chiLaySo);
+				}
+			}
 
 			while ((line = reader.readLine()) != null) {
 				try {
@@ -160,7 +170,6 @@ public class CSVLoader {
 						continue;
 					}
 
-					// Đọc dữ liệu và dọn sạch dấu ngoặc kép do Excel bọc ngoài
 					String maKH = values[0].replace("\"", "").trim();
 					String tenKH = values[1].replace("\"", "").trim();
 					String sdt = values[2].replace("\"", "").trim();
@@ -173,24 +182,33 @@ public class CSVLoader {
 						continue;
 					}
 
-					KhachHangDTO kh = new KhachHangDTO(maKH, tenKH, sdt, diaChi);
+					KhachHangDTO existedKh = existedSdtMap.get(sdt);
 
-					// Kiểm tra xem khách hàng này đã tồn tại qua SĐT chưa
-					KhachHangDTO existedKh = dao.findBySdt(sdt);
 					if (existedKh != null) {
-						kh.setMaKH(existedKh.getMaKH()); // Giữ nguyên mã cũ của họ dưới DB
-						if (dao.update(kh)) {
+						// TÌNH HUỐNG 1: ĐÃ TỒN TẠI SĐT -> CẬP NHẬT (Giữ nguyên mã cũ dưới DB)
+						KhachHangDTO khUpdate = new KhachHangDTO(existedKh.getMaKH(), tenKH, sdt, diaChi);
+						if (dao.update(khUpdate)) {
 							logs.add("Dòng " + lineNumber + ": Số điện thoại '" + sdt
-									+ "' đã tồn tại -> Đã ghi đè thông tin mới");
+									+ "' đã tồn tại -> Đã ghi đè thông tin mới cho mã " + existedKh.getMaKH());
 							successCount++;
 						} else {
 							logs.add("Dòng " + lineNumber + ": Ghi đè thông tin khách hàng thất bại");
 							errorCount++;
 						}
 					} else {
-						if (dao.insert(kh)) {
-							logs.add("Dòng " + lineNumber + ": Thêm mới khách hàng '" + tenKH + "' thành công");
+
+						if (maKH.isEmpty()) {
+							maKH = String.format("KH%03d", suffixNumber);
+							suffixNumber++; // Tăng số thứ tự để sẵn sàng cho khách tiếp theo
+							logs.add("Dòng " + lineNumber + ": Sinh mã tự động cho khách hàng mới -> " + maKH);
+						}
+
+						KhachHangDTO khInsert = new KhachHangDTO(maKH, tenKH, sdt, diaChi);
+						if (dao.insert(khInsert)) {
+							logs.add("Dòng " + lineNumber + ": Thêm mới khách hàng '" + tenKH + "' thành công với mã "
+									+ maKH);
 							successCount++;
+							existedSdtMap.put(sdt, khInsert);
 						} else {
 							logs.add("Dòng " + lineNumber + ": Thêm mới khách hàng thất bại");
 							errorCount++;
@@ -362,7 +380,6 @@ public class CSVLoader {
 
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(Files.newInputStream(Paths.get(filePath)), StandardCharsets.UTF_8))) {
-
 			String headerLine = reader.readLine();
 			if (headerLine == null)
 				return logs;
@@ -370,11 +387,32 @@ public class CSVLoader {
 			String line;
 			int lineNumber = 2;
 
+			// 1. TỐI ƯU HIỆU NĂNG: Chuyển sang ArrayList để có thể add thêm mã mới vừa chèn
+			// vào
+			List<String> existedMaDHs = new ArrayList<>(dao.getAll().stream().map(DonHangDTO::getMaDH).toList());
+
+			// 2. SỬA LỖI CHÍ MẠNG: Lấy mã lớn nhất hiện tại làm gốc để tự tăng tịnh tiến
+			// trong Java
+			String maxMaHienTai = dao.generateMaDonHang(); // Trả về mã kế tiếp từ DB (Ví dụ: "DH0202")
+			int suffixNumber = 1;
+			if (maxMaHienTai != null && !maxMaHienTai.trim().isEmpty()) {
+				String chiLaySo = maxMaHienTai.replaceAll("[^0-9]", "");
+				if (!chiLaySo.isEmpty()) {
+					try {
+						// Vì generateMaDonHang() đã tự +1 rồi, nên suffixNumber ở đây chính là số của
+						// mã mới
+						suffixNumber = Integer.parseInt(chiLaySo);
+					} catch (NumberFormatException e) {
+						suffixNumber = 1;
+					}
+				}
+			}
+
 			while ((line = reader.readLine()) != null) {
 				try {
 					String[] values = parseCSVLine(line);
 					if (values.length != headers.length) {
-						logs.add("Dòng " + lineNumber + ": Số cột không khớp");
+						logs.add("Dòng " + lineNumber + ": Số cột không khớp (Yêu cầu " + headers.length + " cột)");
 						errorCount++;
 						lineNumber++;
 						continue;
@@ -382,17 +420,27 @@ public class CSVLoader {
 
 					String maDH = values[0].replace("\"", "").trim();
 					String maKH = values[1].replace("\"", "").trim();
-					LocalDateTime ngayLap = LocalDateTime.parse(values[2].replace("\"", "").trim());
+					String ngayLapStr = values[2].replace("\"", "").trim();
+
+					if (ngayLapStr.contains(" ") && !ngayLapStr.contains("T")) {
+						ngayLapStr = ngayLapStr.replace(" ", "T");
+					}
+					if (ngayLapStr.length() == 10) {
+						ngayLapStr += "T00:00:00";
+					}
+					LocalDateTime ngayLap = LocalDateTime.parse(ngayLapStr);
 					BigDecimal tongTien = new BigDecimal(values[3].replace("\"", "").trim());
 
 					if (maDH.isEmpty()) {
-						maDH = dao.generateMaDonHang();
+						maDH = String.format("DH%03d", suffixNumber);
+						suffixNumber++; // Tăng số thứ tự ngay lập tức cho dòng tiếp theo
+						logs.add("Dòng " + lineNumber + ": Sinh mã tự động -> " + maDH);
 					}
 
 					DonHangDTO dh = new DonHangDTO(maDH, maKH, ngayLap, tongTien);
 
-					// Tìm kiếm xem mã đơn hàng đã tồn tại trong danh sách chưa
-					boolean isExisted = dao.getAll().stream().anyMatch(d -> d.getMaDH().equals(dh.getMaDH()));
+					// Kiểm tra nhanh trong danh sách bộ nhớ tạm
+					boolean isExisted = existedMaDHs.contains(maDH);
 
 					if (isExisted) {
 						if (dao.update(dh)) {
@@ -400,18 +448,30 @@ public class CSVLoader {
 									+ "' bị trùng -> Đã cập nhật lại thông tin");
 							successCount++;
 						} else {
+							logs.add("Dòng " + lineNumber + ": Cập nhật đơn hàng '" + maDH + "' thất bại");
 							errorCount++;
 						}
 					} else {
 						if (dao.insert(dh)) {
 							logs.add("Dòng " + lineNumber + ": Tạo đơn hàng '" + maDH + "' thành công");
 							successCount++;
+
+							existedMaDHs.add(maDH);
 						} else {
+							logs.add("Dòng " + lineNumber + ": Thêm đơn hàng '" + maDH
+									+ "' thất bại (Lỗi ràng buộc khóa ngoại MaKH)");
 							errorCount++;
 						}
 					}
+				} catch (java.time.format.DateTimeParseException e) {
+					logs.add("Dòng " + lineNumber + ": Lỗi định dạng ngày tháng (Yêu cầu: YYYY-MM-DDTHH:MM:SS) - "
+							+ e.getMessage());
+					errorCount++;
+				} catch (NumberFormatException e) {
+					logs.add("Dòng " + lineNumber + ": Lỗi định dạng số tiền - " + e.getMessage());
+					errorCount++;
 				} catch (Exception e) {
-					logs.add("Dòng " + lineNumber + ": Lỗi định dạng dữ liệu - " + e.getMessage());
+					logs.add("Dòng " + lineNumber + ": Lỗi hệ thống - " + e.getMessage());
 					errorCount++;
 				}
 				lineNumber++;

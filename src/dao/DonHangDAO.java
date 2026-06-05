@@ -26,13 +26,12 @@ public class DonHangDAO {
 
 			// Nếu NgayLap trong DTO bị null, ghi nhận thời gian hiện tại của hệ thống
 			if (dh.getNgayLap() != null) {
-				ps.setObject(3, dh.getNgayLap());
+				ps.setObject(3, dh.getNgayLap()); // Dùng setObject cho LocalDateTime cực kỳ tiện
 			} else {
 				ps.setObject(3, LocalDateTime.now());
 			}
 
 			ps.setBigDecimal(4, dh.getTongTien());
-
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi insert DonHang: " + e.getMessage());
@@ -64,9 +63,11 @@ public class DonHangDAO {
 	public List<DonHangDTO> getAll() {
 		List<DonHangDTO> list = new ArrayList<>();
 		String sql = "SELECT MaDH, MaKH, NgayLap, TongTien FROM DonHang ORDER BY NgayLap DESC";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ResultSet rs = ps.executeQuery();
+
+		try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
 			while (rs.next()) {
+				// Đọc chuẩn LocalDateTime từ Database
 				LocalDateTime ngayLap = rs.getObject("NgayLap", LocalDateTime.class);
 
 				DonHangDTO dh = new DonHangDTO(rs.getString("MaDH"), rs.getString("MaKH"), ngayLap,
@@ -131,24 +132,31 @@ public class DonHangDAO {
 	 */
 	public String generateMaDonHang() {
 		String sql = "SELECT MAX(MaDH) as max_ma FROM DonHang";
-
 		try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
 			if (rs.next()) {
 				String maxMa = rs.getString("max_ma");
+
+				// Trường hợp 1: Nếu bảng chưa có đơn hàng nào
 				if (maxMa == null || maxMa.trim().isEmpty()) {
-					return "DH0001";
+					return "DH001";
 				}
+
 				maxMa = maxMa.trim();
-				String phanSo = maxMa.substring(2); // Cắt bỏ chữ "DH"
-				int nextNumber = Integer.parseInt(phanSo) + 1;
-				return String.format("DH%04d", nextNumber);
+
+				String chiLaySo = maxMa.replaceAll("[^0-9]", "");
+
+				if (!chiLaySo.isEmpty()) {
+					int nextNumber = Integer.parseInt(chiLaySo) + 1;
+					return String.format("DH%03d", nextNumber);
+				}
 			}
 		} catch (SQLException e) {
-			System.out.println("Lỗi sinh mã DonHang: " + e.getMessage());
+			System.out.println("Lỗi SQL khi sinh mã DonHang: " + e.getMessage());
 		} catch (NumberFormatException e) {
 			System.out.println("Lỗi định dạng số khi sinh mã đơn hàng: " + e.getMessage());
 		}
-		return "DH0000";
-	}
 
+		return "DH001";
+	}
 }

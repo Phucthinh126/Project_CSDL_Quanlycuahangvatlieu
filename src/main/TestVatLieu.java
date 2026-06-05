@@ -42,8 +42,6 @@ public class TestVatLieu {
 
 		// Tao chi tiet nha cung cap - so luong nhap hang vat lieu
 		ChiTietNhaCungCapDTO ctNccMoi = new ChiTietNhaCungCapDTO("NCC036", "VL0081", 1000, new BigDecimal(255000));
-		System.out.println("\nXem thong tin so luong mat hang trong vat lieu chua nhap hang cho vlMoi");
-		System.out.println(vlDao.getById("VL0081").getSoLuongTon());
 
 //
 //		vlDao.insert(vlMoi); // them moi vat lieu

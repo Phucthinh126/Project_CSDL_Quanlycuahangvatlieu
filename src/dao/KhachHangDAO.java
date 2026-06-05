@@ -165,25 +165,25 @@ public class KhachHangDAO {
 	 */
 	public String generateMaKhachHang() {
 		String sql = "SELECT MAX(MaKH) as max_ma FROM KhachHang";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ResultSet rs = ps.executeQuery();
+		try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 			if (rs.next()) {
 				String maxMa = rs.getString("max_ma");
 				if (maxMa == null || maxMa.trim().isEmpty()) {
 					return "KH001";
 				}
 
-				String sohientai = maxMa.substring(2).trim();
-				int nextNumber = Integer.parseInt(sohientai) + 1;
-
-				return String.format("KH%04d", nextNumber);
+				String chiLaySo = maxMa.trim().replaceAll("[^0-9]", "");
+				if (!chiLaySo.isEmpty()) {
+					int nextNumber = Integer.parseInt(chiLaySo) + 1;
+					return String.format("KH%03d", nextNumber);
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("Lỗi sinh mã KhachHang: " + e.getMessage());
 		} catch (NumberFormatException e) {
 			System.out.println("Lỗi định dạng số khi sinh mã: " + e.getMessage());
 		}
-		return "KH000";
+		return "KH001";
 	}
 
 }

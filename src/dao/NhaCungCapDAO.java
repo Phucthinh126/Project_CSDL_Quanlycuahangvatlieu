@@ -147,16 +147,30 @@ public class NhaCungCapDAO {
 	 */
 	public String generateMaNhaCC() {
 		String sql = "SELECT MAX(MaNCC) as max_ma FROM NhaCungCap";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ResultSet rs = ps.executeQuery();
+
+		try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
 			if (rs.next()) {
-				int count = rs.getInt("cnt") + 1;
-				return String.format("NCC%03d", count);
+				String maxMa = rs.getString("max_ma");
+
+				if (maxMa == null || maxMa.trim().isEmpty()) {
+					return "NCC001";
+				}
+
+				maxMa = maxMa.trim();
+				String phanSo = maxMa.substring(3);
+
+				int nextNumber = Integer.parseInt(phanSo) + 1;
+
+				return String.format("NCC%03d", nextNumber);
 			}
 		} catch (SQLException e) {
-			System.out.println("Lỗi sinh mã NhaCC: " + e.getMessage());
+			System.out.println("Lỗi SQL khi sinh mã NhaCC: " + e.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("Lỗi định dạng số khi sinh mã NhaCC: " + e.getMessage());
 		}
-		return "NCC000";
-	}
 
+		// Giá trị dự phòng nếu hệ thống xảy ra sự cố kết nối Database
+		return "NCC001";
+	}
 }

@@ -1,6 +1,52 @@
-MAVATLIEU,TENVATLIEU,SOLUONG,GIABAN,GIANHAP,DONVI
-,Xi măng Holcim,200,89000,78000,Bao
-,Sắt xây dựng phi 10,50,145000,120000,Cây
-,Gạch men Đồng Tâm,150,160000,135000,Hộp
-,Sơn tường Dulux 5L,30,450000,380000,Thùng
-,Lưới b40 mạ kẽm,40,320000,270000,Cuộn
+MaVL,TenVL,DonViTinh,SoLuongTon,GiaBan
+,Thép hình chữ U 100x50x5mm,Cây,0,285000
+,Thép hình chữ I 150x75x5mm,Cây,0,425000
+,Thép hình chữ H 100x100x6mm,Cây,0,385000
+,Thép tấm cán nóng 5mm,Tấm,0,1250000
+,Thép tấm cán nguội 2mm,Tấm,0,1850000
+,Inox 304 tấm 1mm,Tấm,0,2850000
+,Inox 201 tròn 10mm,Cây,0,125000
+,Ống thép đen D21.2mm,Cây,200,125000
+,Ống thép mạ kẽm D27.2mm,Cây,180,165000
+,Ống inox 304 D21mm,Cây,50,185000
+,Gạch bông 20x20 (hoa văn),Viên,500,35000
+,Gạch bông 30x30 (hoa văn),Viên,400,55000
+,Gạch giả gỗ 15x90cm,Tấm,300,125000
+,Gạch ốp lát nhám 40x40cm,Tấm,600,85000
+,Gạch trang trí 3D 60x60cm,Tấm,200,450000
+,Sơn nước bóng lau chùi được 18L,Thùng,300,2250000
+,Sơn lót nội thất chống kiềm 5L,Thùng,400,450000
+,Sơn epoxy sàn nhà xưởng 4kg,Bộ,150,650000
+,Sơn chống thấm gốc xi măng 25kg,Bao,200,550000
+,Sơn phản quang kẻ đường 20kg,Thùng,100,1850000
+,Keo dán tường nhựa Trung Quốc 500ml,Chai,800,65000
+,Keo AB dán kim loại 50ml,Bộ,500,85000
+,Keo dán gạch đá ngoài trời 20kg,Bao,250,265000
+,Keo chít mạch gạch ốp lát 2kg,Túi,600,85000
+,Vữa rót cáp dự ứng lực 25kg,Bao,200,450000
+,Vữa khô mác cao 100,Bao,300,125000
+,Bột bả matit cao cấp 40kg,Bao,500,135000
+,Tấm nhựa ốp tường giả gỗ 30x300cm,Tấm,1000,185000
+,Tấm nhựa ốp tường giả đá 40x300cm,Tấm,800,265000
+,Tấm PVC ốp trần 60x60cm,Tấm,1200,85000
+,Thanh nhôm chữ U 6m,Cây,1000,125000
+,Thanh nhôm chữ I 6m,Cây,800,185000
+,Thanh nhóm góc L 6m,Cây,1200,95000
+,Phụ kiện nhôm kính (phụ kiện bộ),Bộ,2000,45000
+,Sliding gắn kính cường lực,Bộ,1000,65000
+,Khóa cửa kính cường lực,Bộ,500,285000
+,Chốt an toàn cửa lùa,Bộ,800,85000
+,Cầu thang inox 304 (mâm hộp),Bộ,50,2850000
+,Tay vịn nhôm 2m,Thanh,300,185000
+,Lan can nhôm kính 1m,Bộ,200,1850000
+,Ống nhựa uPVC D90 (6m),Cây,800,185000
+,Ống nhựa uPVC D114 (6m),Cây,600,285000
+,Ống nhựa HDPE D200 (6m),Cây,400,550000
+,Phụ kiện ống nhựa co nối,Cái,5000,25000
+,Bình nóng lạnh 30L,Cái,150,1850000
+,Bình nóng lạnh 50L,Cái,100,2350000
+,Ngói xi măng màu đỏ,Viên,10000,28500
+,Ngói xi măng màu xám ghi,Viên,8000,26500
+,Ngói lợp Roman màu đất nung,Viên,6000,48500
+,Tôn chống nóng 4 sóng (khổ 1.07m),m2,1500,125000
+,Tôn cách nhiệt PU xanh 50mm,m2,800,285000

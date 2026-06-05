@@ -31,11 +31,12 @@ public class DBConnection {
 
 	// test ket noi
 	public static void main(String[] args) throws SQLException {
-		try(Connection conn = getConnection()){
-			if (conn!= null) {
+		try (Connection conn = getConnection()) {
+			if (conn != null) {
 				System.out.println("Ket noi thanh cong");
+				System.out.println("Database: " + connection.getCatalog());
 			}
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println("Loi ket noi: " + e.getMessage());
 		}
 	}

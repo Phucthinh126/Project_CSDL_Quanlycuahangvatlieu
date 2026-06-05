@@ -20,6 +20,9 @@ public class ChiTietDonHangDAO {
 			ps.setString(1, ctdh.getMaDH());
 			ps.setString(2, ctdh.getMaVL());
 			ps.setInt(3, ctdh.getSoLuong());
+
+			ps.setBigDecimal(4, ctdh.getDonGia());
+
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi insert OrderDetail: " + e.getMessage());
@@ -36,6 +39,7 @@ public class ChiTietDonHangDAO {
 			ps.setInt(1, ctdh.getSoLuong());
 			ps.setString(2, ctdh.getMaDH());
 			ps.setString(3, ctdh.getMaVL());
+			ps.setBigDecimal(4, ctdh.getDonGia());
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
 			System.out.println("Lỗi updateOrderDetail: " + e.getMessage());
