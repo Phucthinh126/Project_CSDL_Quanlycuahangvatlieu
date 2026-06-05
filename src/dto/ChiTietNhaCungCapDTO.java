@@ -54,8 +54,8 @@ public class ChiTietNhaCungCapDTO {
 
 	@Override
 	public String toString() {
-		return "Chi Tiet Nha Cung Cap: [ " + "MaNCC: " + maNCC + ", MaVL: " + maVL + ", SoLuong: " + soLuong
-				+ ", GiaNhap: " + " ]";
+		return "Chi Tiet Lan Nhap Hang: [ " + "MaNCC: " + maNCC + ", MaVL: " + maVL + ", SoLuong: " + soLuong
+				+ ", GiaNhap: " + giaNhap + " ]";
 	}
 
 }
